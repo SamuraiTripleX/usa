@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Adivinhação - Estados Unidos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        h1 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .question {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        .game-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .options, .matches {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 5px;
+            width: 48%;
+        }
+        .option, .match {
+            padding: 5px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+        }
+        .match {
+            background-color: #fff;
+        }
+        .match.correct {
+            background-color: lightgreen;
+            pointer-events: none;
+        }
+        .match.wrong {
+            background-color: #ffcccc;
+        }
+        .result {
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+        button {
+            margin-top: 10px;
+        }
+        .mode-selector {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Jogo de Adivinhação - Estados Unidos</h1>
+    
+    <div class="mode-selector">
+        <input type="radio" id="capital-estado" name="mode" value="capital-estado" checked>
+        <label for="capital-estado">Capital/Estado</label>
+        <input type="radio" id="populacao-estado" name="mode" value="populacao-estado">
+        <label for="populacao-estado">População/Estado</label>
+        <input type="radio" id="populacao-capital" name="mode" value="populacao-capital">
+        <label for="populacao-capital">População/Capital</label>
+    </div>
+
+    <div class="question">
+        <p>Arraste o item da esquerda para o correspondente à direita:</p>
+    </div>
+
+    <div class="game-container">
+        <div class="options" id="options"></div>
+        <div class="matches" id="matches"></div>
+    </div>
+
+    <div class="result" id="resultado"></div>
+
+    <button onclick="resetGame()">Reiniciar Jogo</button>
+
+    <script>
+        const estados = [
+            "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia",
+            "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
+            "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+            "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
+            "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+        ];
+
+        const capitais = [
+            "Montgomery", "Juneau", "Phoenix", "Little Rock", "Sacramento", "Denver", "Hartford", "Dover", "Tallahassee", "Atlanta",
+            "Honolulu", "Boise", "Springfield", "Indianapolis", "Des Moines", "Topeka", "Frankfort", "Baton Rouge", "Augusta", "Annapolis",
+            "Boston", "Lansing", "St. Paul", "Jackson", "Jefferson City", "Helena", "Lincoln", "Carson City", "Concord", "Trenton",
+            "Santa Fe", "Albany", "Raleigh", "Bismarck", "Columbus", "Oklahoma City", "Salem", "Harrisburg", "Providence", "Columbia",
+            "Pierre", "Nashville", "Austin", "Salt Lake City", "Montpelier", "Richmond", "Olympia", "Charleston", "Madison", "Cheyenne"
+        ];
+
+        const populacoesEstados = [
+            "5.024M", "0.734M", "7.359M", "3.018M", "39.538M", "5.812M", "3.605M", "1.003M", "21.538M", "10.711M",
+            "1.455M", "1.839M", "12.741M", "6.785M", "3.271M", "2.937M", "4.505M", "4.657M", "1.362M", "6.177M",
+            "7.033M", "10.034M", "5.657M", "2.961M", "6.154M", "1.084M", "1.961M", "3.104M", "1.388M", "9.267M",
+            "2.117M", "19.836M", "10.551M", "0.774M", "11.756M", "3.986M", "4.237M", "13.002M", "1.097M", "5.148M",
+            "0.886M", "6.910M", "29.145M", "3.337M", "0.645M", "8.642M", "7.738M", "1.793M", "5.893M", "0.578M"
+        ];
+
+        const populacoesCapitais = [
+            "200.603K", "32.255K", "1.608M", "197.958K", "508.172K", "727.211K", "122.587K", "38.166K", "194.500K", "498.715K",
+            "347.181K", "228.959K", "116.250K", "876.384K", "214.133K", "126.587K", "28.602K", "219.792K", "18.899K", "39.223K",
+            "692.600K", "118.210K", "307.193K", "163.778K", "43.079K", "32.091K", "291.082K", "55.274K", "43.019K", "83.387K",
+            "84.683K", "97.478K", "464.485K", "73.529K", "898.553K", "681.054K", "174.365K", "49.271K", "179.883K", "136.632K",
+            "13.961K", "692.587K", "961.855K", "200.567K", "7.436K", "226.622K", "52.882K", "47.273K", "258.366K", "64.122K"
+        ];
+
+        let currentMode = "capital-estado";
+
+        function parsePopulation(pop) {
+            const number = parseFloat(pop.replace(/[MK]/g, ''));
+            const multiplier = pop.includes('M') ? 1000000 : pop.includes('K') ? 1000 : 1;
+            return number * multiplier;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return [...array];
+        }
+
+        function sortByPopulation(populationArray, correspondingArray) {
+            let combined = populationArray.map((pop, index) => ({
+                population: pop,
+                corresponding: correspondingArray[index],
+                originalIndex: index,
+                value: parsePopulation(pop)
+            }));
+            
+            combined.sort((a, b) => {
+                if (b.value === a.value) {
+                    return a.originalIndex - b.originalIndex; // Manter ordem original para valores iguais
+                }
+                return b.value - a.value;
+            });
+            
+            return {
+                populations: combined.map(item => item.population),
+                corresponding: combined.map(item => item.corresponding)
+            };
+        }
+
+        function initializeGame() {
+            const options = document.getElementById("options");
+            const matches = document.getElementById("matches");
+            options.innerHTML = "";
+            matches.innerHTML = "";
+
+            let optionsData, matchesData;
+
+            switch (currentMode) {
+                case "capital-estado":
+                    optionsData = shuffleArray([...capitais]);
+                    matchesData = shuffleArray([...estados]);
+                    break;
+                case "populacao-estado": {
+                    const sorted = sortByPopulation(populacoesEstados, estados);
+                    optionsData = sorted.populations;
+                    matchesData = shuffleArray([...sorted.corresponding]);
+                    break;
+                }
+                case "populacao-capital": {
+                    const sorted = sortByPopulation(populacoesCapitais, capitais);
+                    optionsData = sorted.populations;
+                    matchesData = shuffleArray([...sorted.corresponding]);
+                    break;
+                }
+            }
+
+            optionsData.forEach((item, index) => {
+                const option = document.createElement('div');
+                option.id = `option-${index}`;
+                option.className = 'option';
+                option.draggable = true;
+                option.ondragstart = drag;
+                option.textContent = item;
+                options.appendChild(option);
+            });
+
+            matchesData.forEach((item, index) => {
+                const match = document.createElement('div');
+                match.id = `match-${index}`;
+                match.className = 'match';
+                match.ondrop = drop;
+                match.ondragover = allowDrop;
+                match.textContent = item;
+                matches.appendChild(match);
+            });
+        }
+
+        function changeMode() {
+            currentMode = document.querySelector('input[name="mode"]:checked').value;
+            resetGame();
+        }
+
+        document.querySelectorAll('input[name="mode"]').forEach(radio => {
+            radio.addEventListener('change', changeMode);
+        });
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            const data = event.dataTransfer.getData("text");
+            const draggedElement = document.getElementById(data);
+            const dropzone = event.currentTarget;
+
+            if (!dropzone || !draggedElement || dropzone.classList.contains('correct')) {
+                return;
+            }
+
+            if (dropzone.classList.contains('match')) {
+                let isCorrect = false;
+                const draggedContent = draggedElement.textContent;
+                const dropzoneContent = dropzone.textContent;
+
+                switch (currentMode) {
+                    case "capital-estado": {
+                        const capitalIndex = capitais.indexOf(draggedContent);
+                        const estadoIndex = estados.indexOf(dropzoneContent);
+                        isCorrect = capitalIndex === estadoIndex;
+                        break;
+                    }
+                    case "populacao-estado": {
+                        const popIndex = populacoesEstados.indexOf(draggedContent);
+                        const estadoIndex = estados.indexOf(dropzoneContent);
+                        isCorrect = popIndex === estadoIndex;
+                        break;
+                    }
+                    case "populacao-capital": {
+                        const popIndex = populacoesCapitais.indexOf(draggedContent);
+                        const capitalIndex = capitais.indexOf(dropzoneContent);
+                        isCorrect = popIndex === capitalIndex;
+                        break;
+                    }
+                }
+
+                if (isCorrect) {
+                    dropzone.classList.remove('wrong');
+                    dropzone.classList.add('correct');
+                    dropzone.innerHTML = `${dropzoneContent} - ${draggedContent}`;
+                    draggedElement.style.display = 'none';
+                    checkCompletion();
+                } else {
+                    dropzone.classList.remove('correct');
+                    dropzone.classList.add('wrong');
+                    setTimeout(() => {
+                        dropzone.classList.remove('wrong');
+                    }, 1000);
+                }
+            }
+        }
+
+        function checkCompletion() {
+            const allMatches = document.querySelectorAll('.match');
+            const allCorrect = Array.from(allMatches).every(match => 
+                match.classList.contains('correct')
+            );
+
+            if (allCorrect) {
+                document.getElementById('resultado').innerHTML = 
+                    "<strong>Parabéns! Todas as correspondências estão corretas!</strong>";
+            }
+        }
+
+        function resetGame() {
+            document.getElementById('resultado').innerHTML = '';
+            initializeGame();
+        }
+
+        initializeGame();
+    </script>
+</body>
+</html>
