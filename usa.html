@@ -45,6 +45,8 @@
             align-items: center;
             justify-content: center;
             height: 40px;
+            text-align: center;
+            line-height: 1.2;
         }
         .match {
             background-color: #fff;
@@ -74,6 +76,8 @@
     <div class="mode-selector">
         <input type="radio" id="capital-estado" name="mode" value="capital-estado" checked>
         <label for="capital-estado">Capital/Estado</label>
+        <input type="radio" id="principais-cidades" name="mode" value="principais-cidades">
+        <label for="principais-cidades">Principais Cidades/Estado</label>
         <input type="radio" id="populacao-estado" name="mode" value="populacao-estado">
         <label for="populacao-estado">População/Estado</label>
         <input type="radio" id="populacao-capital" name="mode" value="populacao-capital">
@@ -108,6 +112,59 @@
             "Boston", "Lansing", "St. Paul", "Jackson", "Jefferson City", "Helena", "Lincoln", "Carson City", "Concord", "Trenton",
             "Santa Fe", "Albany", "Raleigh", "Bismarck", "Columbus", "Oklahoma City", "Salem", "Harrisburg", "Providence", "Columbia",
             "Pierre", "Nashville", "Austin", "Salt Lake City", "Montpelier", "Richmond", "Olympia", "Charleston", "Madison", "Cheyenne"
+        ];
+
+        const principaisCidades = [
+            "Birmingham, Huntsville, Mobile, Tuscaloosa, Hoover",
+            "Anchorage, Fairbanks, Wasilla, Kenai, Kodiak",
+            "Tucson, Mesa, Chandler, Scottsdale, Gilbert",
+            "Fort Smith, Fayetteville, Springdale, Jonesboro, Rogers",
+            "Los Angeles, San Diego, San Jose, San Francisco, Fresno",
+            "Colorado Springs, Aurora, Fort Collins, Lakewood, Thornton",
+            "Bridgeport, New Haven, Stamford, Waterbury, Norwalk",
+            "Newark, Wilmington, Middletown, Smyrna, Milford",
+            "Jacksonville, Miami, Tampa, Orlando, St. Petersburg",
+            "Columbus, Augusta, Macon, Savannah, Athens",
+            "Pearl City, Hilo, Kailua, Waipahu, Kaneohe",
+            "Meridian, Nampa, Pocatello, Idaho Falls, Caldwell",
+            "Chicago, Aurora, Joliet, Naperville, Rockford",
+            "Fort Wayne, Evansville, South Bend, Carmel, Bloomington",
+            "Cedar Rapids, Davenport, Sioux City, Iowa City, Waterloo",
+            "Wichita, Overland Park, Kansas City, Olathe, Shawnee",
+            "Louisville, Lexington, Bowling Green, Owensboro, Covington",
+            "New Orleans, Shreveport, Lafayette, Lake Charles, Kenner",
+            "Portland, Lewiston, Bangor, South Portland, Auburn",
+            "Baltimore, Frederick, Rockville, Gaithersburg, Bowie",
+            "Worcester, Cambridge, Lowell, Springfield, Brockton",
+            "Detroit, Grand Rapids, Warren, Sterling Heights, Ann Arbor",
+            "Minneapolis, Rochester, Duluth, Brooklyn Park, Plymouth",
+            "Gulfport, Southaven, Biloxi, Hattiesburg, Olive Branch",
+            "Kansas City, St. Louis, Springfield, Independence, Columbia",
+            "Billings, Missoula, Great Falls, Bozeman, Butte",
+            "Omaha, Bellevue, Grand Island, Kearney, Fremont",
+            "Las Vegas, Reno, Henderson, North Las Vegas, Sparks",
+            "Manchester, Nashua, Dover, Rochester, Merrimack",
+            "Newark, Jersey City, Paterson, Elizabeth, Edison",
+            "Albuquerque, Las Cruces, Rio Rancho, Roswell, Farmington",
+            "New York City, Buffalo, Rochester, Yonkers, Syracuse",
+            "Charlotte, Greensboro, Durham, Winston-Salem, Fayetteville",
+            "Fargo, Grand Forks, Minot, West Fargo, Mandan",
+            "Cleveland, Cincinnati, Toledo, Akron, Dayton",
+            "Tulsa, Norman, Broken Arrow, Edmond, Lawton",
+            "Portland, Eugene, Gresham, Hillsboro, Beaverton",
+            "Philadelphia, Pittsburgh, Allentown, Erie, Reading",
+            "Warwick, Cranston, Pawtucket, East Providence, Woonsocket",
+            "Charleston, North Charleston, Mount Pleasant, Rock Hill, Summerville",
+            "Sioux Falls, Rapid City, Aberdeen, Brookings, Watertown",
+            "Memphis, Knoxville, Chattanooga, Clarksville, Murfreesboro",
+            "Houston, San Antonio, Dallas, Fort Worth, El Paso",
+            "West Valley City, Provo, West Jordan, Orem, Sandy",
+            "Burlington, South Burlington, Rutland, Bennington, Barre",
+            "Virginia Beach, Norfolk, Chesapeake, Arlington, Newport News",
+            "Seattle, Spokane, Tacoma, Vancouver, Bellevue",
+            "Huntington, Parkersburg, Morgantown, Wheeling, Weirton",
+            "Milwaukee, Green Bay, Kenosha, Racine, Appleton",
+            "Casper, Laramie, Gillette, Rock Springs, Sheridan"
         ];
 
         const populacoesEstados = [
@@ -152,7 +209,7 @@
             
             combined.sort((a, b) => {
                 if (b.value === a.value) {
-                    return a.originalIndex - b.originalIndex; // Manter ordem original para valores iguais
+                    return a.originalIndex - b.originalIndex;
                 }
                 return b.value - a.value;
             });
@@ -174,6 +231,10 @@
             switch (currentMode) {
                 case "capital-estado":
                     optionsData = shuffleArray([...capitais]);
+                    matchesData = shuffleArray([...estados]);
+                    break;
+                case "principais-cidades":
+                    optionsData = shuffleArray([...principaisCidades]);
                     matchesData = shuffleArray([...estados]);
                     break;
                 case "populacao-estado": {
@@ -260,6 +321,12 @@
                         const popIndex = populacoesCapitais.indexOf(draggedContent);
                         const capitalIndex = capitais.indexOf(dropzoneContent);
                         isCorrect = popIndex === capitalIndex;
+                        break;
+                    }
+                    case "principais-cidades": {
+                        const cidadesIndex = principaisCidades.indexOf(draggedContent);
+                        const estadoIndex = estados.indexOf(dropzoneContent);
+                        isCorrect = cidadesIndex === estadoIndex;
                         break;
                     }
                 }
