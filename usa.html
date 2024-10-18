@@ -74,15 +74,17 @@
     <h1>Jogo de Adivinhação - Estados Unidos</h1>
     
     <div class="mode-selector">
-        <input type="radio" id="capital-estado" name="mode" value="capital-estado" checked>
-        <label for="capital-estado">Capital/Estado</label>
-        <input type="radio" id="principais-cidades" name="mode" value="principais-cidades">
-        <label for="principais-cidades">Principais Cidades/Estado</label>
-        <input type="radio" id="populacao-estado" name="mode" value="populacao-estado">
-        <label for="populacao-estado">População/Estado</label>
-        <input type="radio" id="populacao-capital" name="mode" value="populacao-capital">
-        <label for="populacao-capital">População/Capital</label>
-    </div>
+		<input type="radio" id="capital-estado" name="mode" value="capital-estado" checked>
+		<label for="capital-estado">Capital/Estado</label>
+		<input type="radio" id="principais-cidades" name="mode" value="principais-cidades">
+		<label for="principais-cidades">Principais Cidades/Estado</label>
+		<input type="radio" id="populacao-estado" name="mode" value="populacao-estado">
+		<label for="populacao-estado">População/Estado</label>
+		<input type="radio" id="populacao-capital" name="mode" value="populacao-capital">
+		<label for="populacao-capital">População/Capital</label>
+		<input type="radio" id="populacao-cidade" name="mode" value="populacao-cidade">
+		<label for="populacao-cidade">Maiores Cidades/População</label>
+	</div>
 
     <div class="question">
         <p>Arraste o item da esquerda para o correspondente à direita:</p>
@@ -115,73 +117,89 @@
         ];
 
         const principaisCidades = [
-            "Birmingham, Huntsville, Mobile, Tuscaloosa, Hoover",
-            "Anchorage, Fairbanks, Wasilla, Kenai, Kodiak",
-            "Tucson, Mesa, Chandler, Scottsdale, Gilbert",
+            "Huntsville, Birmingham, Mobile, Tuscaloosa, Hoover",
+            "Anchorage, Fairbanks, Badger, College, Wasilla",
+            "Tucson, Mesa, Chandler, Glendale, Scottsdale",
             "Fort Smith, Fayetteville, Springdale, Jonesboro, Rogers",
             "Los Angeles, San Diego, San Jose, San Francisco, Fresno",
             "Colorado Springs, Aurora, Fort Collins, Lakewood, Thornton",
             "Bridgeport, New Haven, Stamford, Waterbury, Norwalk",
-            "Newark, Wilmington, Middletown, Smyrna, Milford",
+            "Wilmington, Newark, Middletown, Smyrna, Milford",
             "Jacksonville, Miami, Tampa, Orlando, St. Petersburg",
             "Columbus, Augusta, Macon, Savannah, Athens",
-            "Pearl City, Hilo, Kailua, Waipahu, Kaneohe",
-            "Meridian, Nampa, Pocatello, Idaho Falls, Caldwell",
+            "Hilo, Kailua, Waipahu, Kaneohe, Mililani",
+            "Meridian, Nampa, Idaho Falls, Caldwell, Pocatello",
             "Chicago, Aurora, Joliet, Naperville, Rockford",
-            "Fort Wayne, Evansville, South Bend, Carmel, Bloomington",
-            "Cedar Rapids, Davenport, Sioux City, Iowa City, Waterloo",
-            "Wichita, Overland Park, Kansas City, Olathe, Shawnee",
+            "Fort Wayne, Evansville, South Bend, Carmel, Fishers",
+            "Cedar Rapids, Davenport, Sioux City, Waterloo, Ames",
+            "Wichita, Overland Park, Kansas City, Olathe, Lawrence",
             "Louisville, Lexington, Bowling Green, Owensboro, Covington",
             "New Orleans, Shreveport, Lafayette, Lake Charles, Kenner",
             "Portland, Lewiston, Bangor, South Portland, Auburn",
-            "Baltimore, Frederick, Rockville, Gaithersburg, Bowie",
-            "Worcester, Cambridge, Lowell, Springfield, Brockton",
+            "Baltimore, Frederick, Gaithersburg, Rockville, Bowie",
+            "Worcester, Springfield, Cambridge, Lowell, New Bedford",
             "Detroit, Grand Rapids, Warren, Sterling Heights, Ann Arbor",
-            "Minneapolis, Rochester, Duluth, Brooklyn Park, Plymouth",
-            "Gulfport, Southaven, Biloxi, Hattiesburg, Olive Branch",
-            "Kansas City, St. Louis, Springfield, Independence, Columbia",
+            "Minneapolis, Rochester, Bloomington, Duluth, Brooklyn Park",
+            "Gulfport, Southaven, Hattiesburg, Biloxi, Meridian",
+            "Kansas City, St. Louis, Springfield, Columbia, Independence",
             "Billings, Missoula, Great Falls, Bozeman, Butte",
             "Omaha, Bellevue, Grand Island, Kearney, Fremont",
-            "Las Vegas, Reno, Henderson, North Las Vegas, Sparks",
-            "Manchester, Nashua, Dover, Rochester, Merrimack",
+            "Las Vegas, Henderson, Reno, North Las Vegas, Sparks",
+            "Manchester, Nashua, Derry, Dover, Rochester",
             "Newark, Jersey City, Paterson, Elizabeth, Edison",
             "Albuquerque, Las Cruces, Rio Rancho, Roswell, Farmington",
             "New York City, Buffalo, Rochester, Yonkers, Syracuse",
             "Charlotte, Greensboro, Durham, Winston-Salem, Fayetteville",
-            "Fargo, Grand Forks, Minot, West Fargo, Mandan",
+            "Fargo, Grand Forks, Minot, West Fargo, Williston",
             "Cleveland, Cincinnati, Toledo, Akron, Dayton",
             "Tulsa, Norman, Broken Arrow, Edmond, Lawton",
             "Portland, Eugene, Gresham, Hillsboro, Beaverton",
             "Philadelphia, Pittsburgh, Allentown, Erie, Reading",
             "Warwick, Cranston, Pawtucket, East Providence, Woonsocket",
-            "Charleston, North Charleston, Mount Pleasant, Rock Hill, Summerville",
+            "Charleston, North Charleston, Mount Pleasant, Rock Hill, Greenville",
             "Sioux Falls, Rapid City, Aberdeen, Brookings, Watertown",
             "Memphis, Knoxville, Chattanooga, Clarksville, Murfreesboro",
             "Houston, San Antonio, Dallas, Fort Worth, El Paso",
             "West Valley City, Provo, West Jordan, Orem, Sandy",
-            "Burlington, South Burlington, Rutland, Bennington, Barre",
+            "Burlington, South Burlington, Rutland, Essex Junction, Barre",
             "Virginia Beach, Norfolk, Chesapeake, Arlington, Newport News",
             "Seattle, Spokane, Tacoma, Vancouver, Bellevue",
-            "Huntington, Parkersburg, Morgantown, Wheeling, Weirton",
+            "Huntington, Morgantown, Parkersburg, Wheeling, Weirton",
             "Milwaukee, Green Bay, Kenosha, Racine, Appleton",
             "Casper, Laramie, Gillette, Rock Springs, Sheridan"
         ];
 
         const populacoesEstados = [
-            "5.024M", "0.734M", "7.359M", "3.018M", "39.538M", "5.812M", "3.605M", "1.003M", "21.538M", "10.711M",
-            "1.455M", "1.839M", "12.741M", "6.785M", "3.271M", "2.937M", "4.505M", "4.657M", "1.362M", "6.177M",
-            "7.033M", "10.034M", "5.657M", "2.961M", "6.154M", "1.084M", "1.961M", "3.104M", "1.388M", "9.267M",
-            "2.117M", "19.836M", "10.551M", "0.774M", "11.756M", "3.986M", "4.237M", "13.002M", "1.097M", "5.148M",
-            "0.886M", "6.910M", "29.145M", "3.337M", "0.645M", "8.642M", "7.738M", "1.793M", "5.893M", "0.578M"
+            "5.074M", "0.734M", "7.359M", "3.046M", "39.538M", "5.774M", "3.606M", "0.990M", "21.538M", "10.712M",
+            "1.455M", "1.839M", "12.813M", "6.786M", "3.190M", "2.938M", "4.506M", "4.658M", "1.362M", "6.177M",
+            "7.030M", "10.077M", "5.706M", "2.961M", "6.155M", "1.084M", "1.962M", "3.105M", "1.378M", "9.289M",
+            "2.118M", "20.201M", "10.439M", "0.779M", "11.799M", "3.959M", "4.237M", "13.002M", "1.097M", "5.118M",
+            "0.887M", "6.911M", "29.146M", "3.272M", "0.643M", "8.631M", "7.705M", "1.794M", "5.894M", "0.577M"
         ];
 
         const populacoesCapitais = [
-            "200.603K", "32.255K", "1.608M", "197.958K", "508.172K", "727.211K", "122.587K", "38.166K", "194.500K", "498.715K",
-            "347.181K", "228.959K", "116.250K", "876.384K", "214.133K", "126.587K", "28.602K", "219.792K", "18.899K", "39.223K",
-            "692.600K", "118.210K", "307.193K", "163.778K", "43.079K", "32.091K", "291.082K", "55.274K", "43.019K", "83.387K",
-            "84.683K", "97.478K", "464.485K", "73.529K", "898.553K", "681.054K", "174.365K", "49.271K", "179.883K", "136.632K",
-            "13.961K", "692.587K", "961.855K", "200.567K", "7.436K", "226.622K", "52.882K", "47.273K", "258.366K", "64.122K"
+            "201.022K", "31.974K", "1.650M", "200.405K", "525.041K", "715.878K", "121.054K", "38.166K", "197.102K", "510.823K",
+            "343.302K", "235.684K", "114.394K", "878.963K", "214.133K", "125.310K", "28.621K", "227.470K", "18.900K", "40.812K",
+            "675.647K", "112.644K", "311.527K", "153.701K", "43.228K", "33.124K", "293.446K", "58.639K", "43.244K", "83.412K",
+            "87.505K", "101.228K", "479.332K", "74.112K", "907.107K", "687.725K", "173.535K", "50.099K", "190.034K", "138.104K",
+            "14.091K", "715.884K", "979.882K", "200.133K", "7.477K", "226.622K", "55.593K", "47.215K", "273.761K", "65.051K"
         ];
+		
+		const cidades = [
+			"New York, NY", "Los Angeles, CA", "Chicago, IL", "Houston, TX", "Phoenix, AZ", "Philadelphia, PA", "San Antonio, TX", "San Diego, CA", "Dallas, TX", "Austin, TX",
+			"San Jose, CA", "Jacksonville, FL", "Fort Worth, TX", "Columbus, OH", "Charlotte, NC", "Indianapolis, IN", "San Francisco, CA", "Seattle, WA", "Denver, CO", "Washington, DC",
+			"Nashville, TN", "Oklahoma City, OK", "Boston, MA", "El Paso, TX", "Portland, OR", "Las Vegas, NV", "Detroit, MI", "Louisville, KY", "Memphis, TN", "Baltimore, MD",
+			"Milwaukee, WI", "Albuquerque, NM", "Tucson, AZ", "Fresno, CA", "Sacramento, CA", "Kansas City, MO", "Mesa, AZ", "Atlanta, GA", "Omaha, NE", "Colorado Springs, CO",
+			"Raleigh, NC", "Miami, FL", "Virginia Beach, VA", "Oakland, CA", "Minneapolis, MN", "Arlington, TX", "Wichita, KS", "Aurora, CO", "New Orleans, LA", "Cleveland, OH"
+		];
+
+		const populacoesCidades = [
+			"8.411M", "3.834M", "2.664M", "2.366M", "1.636M", "1.526M", "1.502M", "1.401M", "1.291M", "1.021M",
+			"0.980M", "0.966M", "0.957M", "0.936M", "0.915M", "0.879M", "0.809M", "0.734M", "0.716M", "0.707M",
+			"0.689M", "0.694M", "0.654M", "0.679M", "0.653M", "0.641M", "0.633M", "0.623M", "0.621M", "0.565M",
+			"0.561M", "0.564M", "0.548M", "0.547M", "0.522M", "0.511M", "0.510M", "0.507M", "0.488M", "0.486M",
+			"0.486M", "0.441M", "0.459M", "0.433M", "0.425M", "0.398M", "0.396M", "0.395M", "0.364M", "0.363M"
+		];
 
         let currentMode = "capital-estado";
 
@@ -249,6 +267,12 @@
                     matchesData = shuffleArray([...sorted.corresponding]);
                     break;
                 }
+				case "populacao-cidade": {
+					const sorted = sortByPopulation(populacoesCidades, cidades);
+					optionsData = sorted.populations;
+					matchesData = shuffleArray([...sorted.corresponding]);
+					break;
+				}
             }
 
             optionsData.forEach((item, index) => {
@@ -329,6 +353,12 @@
                         isCorrect = cidadesIndex === estadoIndex;
                         break;
                     }
+					case "populacao-cidade": {
+						const popIndex = populacoesCidades.indexOf(draggedContent);
+						const cidadeIndex = cidades.indexOf(dropzoneContent);
+						isCorrect = popIndex === cidadeIndex;
+						break;
+					}
                 }
 
                 if (isCorrect) {
